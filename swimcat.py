@@ -37,11 +37,29 @@ class SwimCat(object):
     raise RuntimeError('Could not locate SWIM buffer in RAM. Did you link swimcat.rel?')
   
   def poll(self):
-    b = self.dev.read_bytes(self.pos, 2 + self.bufsize)
-    #print(b)
+    while True:
+      try:
+        b = self.dev.read_bytes(self.pos, 2 + self.bufsize)
+        r_index = b[0]
+        w_index = b[1]
+        if r_index >= self.bufsize * 2 or w_index > self.bufsize * 2:
+          raise espstlink.STLinkException()
+        break
+      except espstlink.STLinkException:
+        time.sleep(0.1)
+        # device may be in halt mode or resetted, keep retrying
+        while True:
+          try:
+            dev.init(reset=False)
+            break
+          except espstlink.STLinkException:
+            time.sleep(1)
+
     r_index = b[0]
     w_index = b[1]
+    # set r_index := w_index on device
     self.dev.write(self.pos, w_index)
+
     avail = (w_index - r_index) % (2 * self.bufsize)
     if avail:
       b = b[2:]
