@@ -13,7 +13,7 @@ struct swimcat {
 #if !DEFAULT_BUFSIZE
   uint8_t size_indicator;
 #endif
-  uint8_t read_idx;
+  volatile uint8_t read_idx;
   uint8_t write_idx;
   uint8_t stdout[BUFSIZE];
 } swimcat = {
@@ -26,12 +26,19 @@ struct swimcat {
 int putchar(int c) {
   uint8_t occupied;
   uint8_t free;
+
   do {
     occupied = (swimcat.write_idx - swimcat.read_idx) & (2 * BUFSIZE - 1);
     free = BUFSIZE - occupied;
   } while(!free);
   
   swimcat.stdout[swimcat.write_idx & (BUFSIZE - 1)] = c;
+  // we keep one more bit for the counter, so that we can distinguish
+  // empty vs full.
   swimcat.write_idx = (swimcat.write_idx + 1) & (2 * BUFSIZE - 1);
   return c;
+}
+
+void swimcat_flush() {
+  while(swimcat.write_idx != swimcat.read_idx) ;
 }
