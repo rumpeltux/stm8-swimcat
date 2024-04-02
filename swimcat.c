@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdint.h>
 
+// Arduino.
+extern void yield();
+
 // bufsize 8 (3 bits): 1.5kb/s
 // bufsize 128 (7 bits): 5kb/s
 // max bufsize_bits: 7 (128 byte buffer)
@@ -40,5 +43,5 @@ int putchar(int c) {
 }
 
 void swimcat_flush() {
-  while(swimcat.write_idx != swimcat.read_idx) ;
+  while(swimcat.write_idx != swimcat.read_idx) yield();
 }
