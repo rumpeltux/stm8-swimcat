@@ -14,6 +14,9 @@ class SwimCat(object):
   def __init__(self, dev, show_date=False, unstall=False):
     self.dev = dev
     self.show_date = show_date
+    if unstall:
+      deb = Debugger(dev)
+      deb.cont()
     self.pos = self.find_swim_buffer()
     b = self.dev.read_bytes(self.pos, 3)
     if (b[0] & 0xF0) == 0:
@@ -21,9 +24,6 @@ class SwimCat(object):
     else:
       self.bufsize = 1 << (b[0] & 0x7)
       self.pos += 1
-    if unstall:
-      deb = Debugger(dev)
-      deb.cont()
     print("SWIMCAT(%d)" % self.bufsize, file=sys.stderr)
 
   def find_swim_buffer(self):
