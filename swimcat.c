@@ -7,7 +7,12 @@ extern void yield();
 // bufsize 8 (3 bits): 1.5kb/s
 // bufsize 128 (7 bits): 5kb/s
 // max bufsize_bits: 7 (128 byte buffer)
-#define BUFSIZE_BITS 3
+#ifndef SWIMCAT_BUFSIZE_BITS
+#  define BUFSIZE_BITS 3
+#else
+#  define BUFSIZE_BITS SWIMCAT_BUFSIZE_BITS
+#endif
+
 #define BUFSIZE (1 << BUFSIZE_BITS)
 #define DEFAULT_BUFSIZE (BUFSIZE_BITS == 3)
 
