@@ -54,16 +54,16 @@ class SwimCat(object):
             break
           except espstlink.STLinkException:
             time.sleep(1)
-
+      
     r_index = b[0]
     w_index = b[1]
     # set r_index := w_index on device
-    self.dev.write(self.pos, w_index)
+    if r_index != w_index:
+      self.dev.write(self.pos, w_index)
 
     avail = (w_index - r_index) % (2 * self.bufsize)
     if avail:
       b = b[2:]
-      #print('have', avail)
       w_index %= self.bufsize
       r_index %= self.bufsize
       if w_index > r_index:
