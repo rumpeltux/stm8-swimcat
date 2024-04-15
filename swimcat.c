@@ -2,7 +2,7 @@
 #include <stdint.h>
 
 // Arduino.
-extern void yield();
+extern void yield(void);
 
 // bufsize 8 (3 bits): 1.5kb/s
 // bufsize 128 (7 bits): 5kb/s
@@ -16,7 +16,7 @@ extern void yield();
 #define BUFSIZE (1 << BUFSIZE_BITS)
 #define DEFAULT_BUFSIZE (BUFSIZE_BITS == 3)
 
-struct swimcat {
+static struct swimcat {
   uint8_t magic[2];
 #if !DEFAULT_BUFSIZE
   uint8_t size_indicator;
@@ -47,6 +47,6 @@ int putchar(int c) {
   return c;
 }
 
-void swimcat_flush() {
+void swimcat_flush(void) {
   while(swimcat.write_idx != swimcat.read_idx) yield();
 }
