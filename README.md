@@ -8,6 +8,9 @@ Fan of `printf` debugging? This is for you.
 polled by a remote device using the SWIM debug interface that's also used
 when flashing.
 
+If the buffer is full, `putchar` will be blocking if the `swimcat.py` listener
+is connected, otherwise it will return `EOF` (-1) and not record the character.
+
 ## Usage
 
 1. Run `make` to generate `swimcat.rel`.
