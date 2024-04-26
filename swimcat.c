@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-// Arduino.
+// For Arduino. You can provide a no-op implementation otherwise.
 extern void yield(void);
 
 // bufsize 8 (3 bits): 1.5kb/s
